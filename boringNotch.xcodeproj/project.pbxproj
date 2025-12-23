@@ -142,6 +142,9 @@
 		B1F0A0022E60000100000001 /* BrightnessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F0A0012E60000100000001 /* BrightnessManager.swift */; };
 		B1F747F92EC7E94000F841DB /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F747F82EC7E94000F841DB /* LottieView.swift */; };
 		B1FEB4992C7686630066EBBC /* PanGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FEB4982C7686630066EBBC /* PanGesture.swift */; };
+		DAB000022C5E98EB0011E668 /* ClipboardItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB000012C5E98EB0011E668 /* ClipboardItem.swift */; };
+		DAB000042C5E98EB0011E668 /* ClipboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB000032C5E98EB0011E668 /* ClipboardManager.swift */; };
+		DAB000062C5E98EB0011E668 /* ClipboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB000052C5E98EB0011E668 /* ClipboardView.swift */; };
 		F38DE6482D8243E7008B5C6D /* BatteryActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38DE6472D8243E2008B5C6D /* BatteryActivityManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -308,6 +311,9 @@
 		B1F0A0012E60000100000001 /* BrightnessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessManager.swift; sourceTree = "<group>"; };
 		B1F747F82EC7E94000F841DB /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		B1FEB4982C7686630066EBBC /* PanGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanGesture.swift; sourceTree = "<group>"; };
+		DAB000012C5E98EB0011E668 /* ClipboardItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardItem.swift; sourceTree = "<group>"; };
+		DAB000032C5E98EB0011E668 /* ClipboardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardManager.swift; sourceTree = "<group>"; };
+		DAB000052C5E98EB0011E668 /* ClipboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardView.swift; sourceTree = "<group>"; };
 		F38DE6472D8243E2008B5C6D /* BatteryActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryActivityManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -496,6 +502,7 @@
 				B186542F2C6F455E000B926A /* Notch */,
 				9A0887332C7AFF7E00C160EA /* Tabs */,
 				B186542E2C6F453B000B926A /* Music */,
+				DAB000072C5E98EB0011E668 /* Clipboard */,
 				14D570BF2C5EA5870011E668 /* AnimatedFace.swift */,
 				14288DE72C6E01C800B9F80C /* ProgressIndicator.swift */,
 				14D570C12C5EAFBF0011E668 /* EmptyState.swift */,
@@ -755,6 +762,40 @@
 				B1C4489A2C97376A001F0858 /* TipStore.swift */,
 			);
 			path = Tips;
+			sourceTree = "<group>";
+		};
+		DAB000072C5E98EB0011E668 /* Clipboard */ = {
+			isa = PBXGroup;
+			children = (
+				DAB000082C5E98EB0011E668 /* Managers */,
+				DAB000092C5E98EB0011E668 /* Models */,
+				DAB0000A2C5E98EB0011E668 /* Views */,
+			);
+			path = Clipboard;
+			sourceTree = "<group>";
+		};
+		DAB000082C5E98EB0011E668 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				DAB000032C5E98EB0011E668 /* ClipboardManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		DAB000092C5E98EB0011E668 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DAB000012C5E98EB0011E668 /* ClipboardItem.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		DAB0000A2C5E98EB0011E668 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				DAB000052C5E98EB0011E668 /* ClipboardView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1020,6 +1061,9 @@
 				1100290C2E847E2800035A57 /* NSItemProvider+LoadHelpers.swift in Sources */,
 				11CFC6632E09918400748C80 /* MusicControllerSelectionView.swift in Sources */,
 				B1F0A0022E60000100000001 /* BrightnessManager.swift in Sources */,
+				DAB000022C5E98EB0011E668 /* ClipboardItem.swift in Sources */,
+				DAB000042C5E98EB0011E668 /* ClipboardManager.swift in Sources */,
+				DAB000062C5E98EB0011E668 /* ClipboardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

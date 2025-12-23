@@ -5202,6 +5202,9 @@
         }
       }
     },
+    "Clear All" : {
+
+    },
     "Clear slot" : {
       "localizations" : {
         "ar" : {
@@ -5301,6 +5304,9 @@
           }
         }
       }
+    },
+    "Clipboard is empty" : {
+
     },
     "Close" : {
       "localizations" : {
@@ -16909,6 +16915,9 @@
           }
         }
       }
+    },
+    "Recently Copied" : {
+
     },
     "Release name" : {
       "localizations" : {
