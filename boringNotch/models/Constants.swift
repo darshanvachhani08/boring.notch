@@ -199,4 +199,12 @@ extension Defaults.Keys {
     }
 
     static let didClearLegacyURLCacheV1 = Key<Bool>("didClearLegacyURLCache_v1", default: false)
+    static let stickyNotes = Key<[StickyNote]>("stickyNotes", default: [])
+}
+
+struct StickyNote: Codable, Identifiable, Hashable, Defaults.Serializable {
+    var id = UUID()
+    var content: String
+    var color: String = "yellow" // Optional for future use
+    var createdAt = Date()
 }

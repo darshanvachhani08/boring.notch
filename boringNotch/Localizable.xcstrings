@@ -15016,6 +15016,9 @@
         }
       }
     },
+    "No notes yet" : {
+
+    },
     "Not Now" : {
       "localizations" : {
         "ar" : {
@@ -20820,6 +20823,12 @@
           }
         }
       }
+    },
+    "Sticky" : {
+
+    },
+    "Sticky Note" : {
+
     },
     "Stopped" : {
       "extractionState" : "stale",

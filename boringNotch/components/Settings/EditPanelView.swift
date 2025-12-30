@@ -34,7 +34,7 @@ struct EditPanelView: View {
     EditPanelView()
 }
 
-struct VisualEffectView: NSViewRepresentable {
+struct BoringVisualEffectView: NSViewRepresentable {
     let material: NSVisualEffectView.Material
     let blendingMode: NSVisualEffectView.BlendingMode
     

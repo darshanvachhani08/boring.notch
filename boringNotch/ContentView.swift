@@ -349,6 +349,8 @@ struct ContentView: View {
                         ShelfView()
                     case .clipboard:
                         ClipboardView()
+                    case .sticky:
+                        StickyView()
                     }
                 }
                 .transition(
@@ -658,3 +660,199 @@ struct GeneralDropTargetDelegate: DropDelegate {
         .environmentObject(vm)
         .frame(width: vm.notchSize.width, height: vm.notchSize.height)
 }
+
+// MARK: - Sticky Feature
+
+class StickyViewModel: ObservableObject {
+    static let shared = StickyViewModel()
+    
+    @Published var notes: [StickyNote] = Defaults[.stickyNotes] {
+        didSet {
+            Defaults[.stickyNotes] = notes
+        }
+    }
+    
+    private init() {}
+    
+    func addNote() {
+        let newNote = StickyNote(content: "")
+        notes.append(newNote)
+        openFloatingWindow(for: newNote)
+    }
+    
+    func removeNote(_ note: StickyNote) {
+        notes.removeAll { $0.id == note.id }
+        // Also close the window if it's open
+        NotificationCenter.default.post(name: NSNotification.Name("CloseStickyWindow"), object: note.id)
+    }
+    
+    func updateNote(_ note: StickyNote) {
+        if let index = notes.firstIndex(where: { $0.id == note.id }) {
+            notes[index] = note
+        }
+    }
+    
+    func openFloatingWindow(for note: StickyNote) {
+        NotificationCenter.default.post(name: NSNotification.Name("OpenStickyWindow"), object: note)
+    }
+}
+
+struct StickyView: View {
+    @StateObject private var vm = StickyViewModel.shared
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            VStack(spacing: 8) {
+                Image(systemName: "note.text")
+                    .font(.system(size: 24))
+                    .foregroundStyle(.yellow)
+                
+                Text("Sticky")
+                    .font(.system(.caption, design: .rounded))
+                    .fontWeight(.bold)
+                    .foregroundColor(.gray)
+                
+                Spacer()
+                
+                Button(action: {
+                    vm.addNote()
+                }) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.system(size: 24))
+                        .foregroundColor(.effectiveAccent)
+                }
+                .buttonStyle(.plain)
+            }
+            .frame(width: 60)
+            .padding(.top, 12)
+            .padding(.bottom, 8)
+            
+            panel
+        }
+        .frame(maxHeight: .infinity)
+        .padding(.trailing, 8)
+    }
+    
+    var panel: some View {
+        RoundedRectangle(cornerRadius: 16)
+            .fill(Color.white.opacity(0.05))
+            .overlay {
+                if vm.notes.isEmpty {
+                    VStack(spacing: 10) {
+                        Image(systemName: "note.text")
+                            .font(.system(size: 40))
+                            .foregroundStyle(.gray.opacity(0.3))
+                        Text("No notes yet")
+                            .foregroundColor(.gray)
+                    }
+                } else {
+                    ScrollView {
+                        VStack(spacing: 8) {
+                            ForEach(vm.notes) { note in
+                                StickyNoteRow(note: note)
+                            }
+                        }
+                        .padding(8)
+                    }
+                }
+            }
+            .frame(maxHeight: .infinity)
+            .padding(.vertical, 8)
+    }
+}
+
+struct StickyNoteRow: View {
+    let note: StickyNote
+    @StateObject private var vm = StickyViewModel.shared
+    @State private var isHovered = false
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(note.content.isEmpty ? "Empty note..." : note.content)
+                    .lineLimit(1)
+                    .foregroundColor(note.content.isEmpty ? .gray : .white)
+                Text(note.createdAt, style: .date)
+                    .font(.caption2)
+                    .foregroundColor(.gray)
+            }
+            Spacer()
+            
+            if isHovered {
+                HStack(spacing: 12) {
+                    Button(action: {
+                        vm.openFloatingWindow(for: note)
+                    }) {
+                        Image(systemName: "pip.enter")
+                            .foregroundColor(.effectiveAccent)
+                    }
+                    .buttonStyle(.plain)
+                    
+                    Button(action: {
+                        vm.removeNote(note)
+                    }) {
+                        Image(systemName: "trash")
+                            .foregroundColor(.red.opacity(0.7))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+        .padding(10)
+        .background(Color.white.opacity(isHovered ? 0.1 : 0.05))
+        .cornerRadius(10)
+        .onHover { isHovered = $0 }
+        .onTapGesture {
+            vm.openFloatingWindow(for: note)
+        }
+    }
+}
+
+struct StickyFloatingView: View {
+    @State var note: StickyNote
+    @StateObject private var vm = StickyViewModel.shared
+    @FocusState private var isFocused: Bool
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Circle()
+                    .fill(Color.yellow)
+                    .frame(width: 12, height: 12)
+                Text("Sticky Note")
+                    .font(.system(.caption, design: .rounded))
+                    .fontWeight(.bold)
+                    .foregroundColor(.black.opacity(0.8))
+                Spacer()
+                Button(action: {
+                    NotificationCenter.default.post(name: NSNotification.Name("CloseStickyWindow"), object: note.id)
+                }) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundColor(.black.opacity(0.5))
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(Color.yellow) // Traditional sticky note header
+            
+            TextEditor(text: $note.content)
+                .font(.system(.body, design: .rounded))
+                .foregroundColor(.black)
+                .padding(8)
+                .focused($isFocused)
+                .scrollContentBackground(.hidden)
+                .onChange(of: note.content) { _, _ in
+                    vm.updateNote(note)
+                }
+        }
+        .background(Color(red: 1.0, green: 0.95, blue: 0.7)) // Pale yellow sticky note color
+        .onAppear {
+            isFocused = true
+        }
+    }
+}
+
+
+

@@ -50,7 +50,7 @@ struct OnboardingFinishView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
-            VisualEffectView(material: .underWindowBackground, blendingMode: .behindWindow)
+            BoringVisualEffectView(material: .underWindowBackground, blendingMode: .behindWindow)
                 .ignoresSafeArea()
         )
     }

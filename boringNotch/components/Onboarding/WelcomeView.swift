@@ -74,7 +74,7 @@ struct WelcomeView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .ignoresSafeArea()
         .background {
-            VisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
+            BoringVisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
                 .ignoresSafeArea()
         }
     }

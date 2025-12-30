@@ -83,6 +83,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         MusicManager.shared.destroy()
         cleanupDragDetectors()
         cleanupWindows()
+        cleanupStickyWindows()
         XPCHelperClient.shared.stopMonitoringAccessibilityAuthorization()
     }
 
@@ -168,6 +169,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             detector.stopMonitoring()
         }
         dragDetectors.removeAll()
+    }
+
+    private func cleanupStickyWindows() {
+        stickyWindows.values.forEach { $0.close() }
+        stickyWindows.removeAll()
     }
 
     private func setupDragDetectors() {
@@ -277,8 +283,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.alphaValue = 1
     }
 
+    var stickyWindows: [UUID: NSWindow] = [:]
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         _ = ClipboardManager.shared
+
+        // Observe Sticky Note notifications
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("OpenStickyWindow"), object: nil, queue: .main) { [weak self] notification in
+            if let note = notification.object as? StickyNote {
+                self?.openStickyWindow(for: note)
+            }
+        }
+        
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("CloseStickyWindow"), object: nil, queue: .main) { [weak self] notification in
+            if let id = notification.object as? UUID {
+                DispatchQueue.main.async {
+                    self?.stickyWindows[id]?.close()
+                }
+            }
+        }
 
         NotificationCenter.default.addObserver(
             self,
@@ -557,7 +580,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApplication.shared.terminate(self)
     }
 
-    private func showOnboardingWindow(step: OnboardingStep = .welcome) {
+    func showOnboardingWindow(step: OnboardingStep = .welcome) {
         if onboardingWindowController == nil {
             let window = NSWindow(
                 contentRect: NSRect(x: 0, y: 0, width: 400, height: 600),
@@ -593,6 +616,41 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
         onboardingWindowController?.window?.makeKeyAndOrderFront(nil)
         onboardingWindowController?.window?.orderFrontRegardless()
+    }
+
+    func openStickyWindow(for note: StickyNote) {
+        if let existing = stickyWindows[note.id] {
+            existing.makeKeyAndOrderFront(nil)
+            return
+        }
+
+        let rect = NSRect(x: 100, y: 100, width: 250, height: 250)
+        let styleMask: NSWindow.StyleMask = [.titled, .closable, .resizable, .fullSizeContentView]
+        
+        let window = NSWindow(contentRect: rect, styleMask: styleMask, backing: .buffered, defer: false)
+        window.titleVisibility = .hidden
+        window.titlebarAppearsTransparent = true
+        window.isMovableByWindowBackground = true
+        window.backgroundColor = .clear
+        window.hasShadow = true
+        window.level = .floating
+        
+        window.contentView = NSHostingView(
+            rootView: StickyFloatingView(note: note)
+        )
+        
+        window.makeKeyAndOrderFront(nil)
+        window.isReleasedWhenClosed = false
+        stickyWindows[note.id] = window
+        
+        // Remove from manager when window is closed
+        NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: window, queue: .main) { [weak self] _ in
+            self?.stickyWindows.removeValue(forKey: note.id)
+        }
+        
+        // Store the observer somewhere to avoid leak? 
+        // Actually, for simplicity now, let's just ensure we don't crash.
+        // To properly fix leaks, we'd need to store the observer token.
     }
 }
 

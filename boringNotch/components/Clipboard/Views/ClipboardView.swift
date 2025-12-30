@@ -119,7 +119,7 @@ struct ClipboardItemRow: View {
                     }) {
                         Image(systemName: "doc.on.doc.fill")
                             .font(.system(size: 12))
-                            .foregroundColor(.accentColor)
+                            .foregroundColor(.effectiveAccent)
                     }
                     .buttonStyle(PlainButtonStyle())
                     

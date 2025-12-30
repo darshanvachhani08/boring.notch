@@ -55,7 +55,7 @@ struct PermissionRequestView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         .background(
-            VisualEffectView(material: .underWindowBackground, blendingMode: .behindWindow)
+            BoringVisualEffectView(material: .underWindowBackground, blendingMode: .behindWindow)
                 .ignoresSafeArea()
         )
     }

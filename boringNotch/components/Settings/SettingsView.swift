@@ -969,7 +969,7 @@ struct Shelf: View {
                                 }
                             }
                             .frame(width: 16, height: 16)
-                            .foregroundColor(.accentColor)
+                            .foregroundColor(.effectiveAccent)
                             Text(provider.id)
                         }
                         .tag(provider.id)
